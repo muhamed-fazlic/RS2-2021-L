@@ -1,8 +1,11 @@
+using eProdaja.Filters;
+using eProdaja.Models;
 using eProdaja.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,9 +32,17 @@ namespace eProdaja
             services.AddControllers();
             services.AddSwaggerGen();
             services.AddScoped<IProizvodService, ProizvodService>();
+            services.AddScoped<IKorisniciService, KorisniciService>();
+            services.AddAutoMapper(typeof(Startup));
+            services.AddControllers(x => {
+                x.Filters.Add<ErrorFilter>();
+            });
+
             //Transient
             //Scoped
             //Singleton
+            services.AddDbContext<eProdajaContext>(
+       options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
 
         }
 
